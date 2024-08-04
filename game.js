@@ -1850,10 +1850,10 @@ ScreenGameOver.prototype = {
     },
     update: function() {},
     restartGameClicked: function() {
-		gradle.event('over_button_restart');
-        musicPlayer.playSound("clck");
-        gamePlay.prepareNewGame();
-        guiManager.screenSwitcher_openNewScreen(guiManager.screenGame)
+		// gradle.event('over_button_restart');
+        // musicPlayer.playSound("clck");
+        // gamePlay.prepareNewGame();
+        // guiManager.screenSwitcher_openNewScreen(guiManager.screenGame)
     },
     knifeSelBtnClicked: function() {
         musicPlayer.playSound("clck");
@@ -2970,6 +2970,7 @@ GamePlay.prototype = {
         this.currentStageKnivesSuccessful++;
         guiManager.screenGame.updateLeftKnivesCount();
         this.currentGameScore++;
+        gradle.event("score|"+this.currentGameScore)
         guiManager.screenGame.updateScoreText();
         this.currentStageKnivesSuccessful >= this.currentStageKnivesToThrowCount && (this.currentStageKnivesSuccessful = this.currentStageKnivesToThrowCount,
             this.stageSuccessful())
@@ -3062,7 +3063,8 @@ GamePlay.prototype = {
         logToConsole("stage failed");
         guiManager.screenTop.showSoundButton();
         REVIVE_PRICE += REVIVE_PRICE_increment;
-        this.coinsAvailable(REVIVE_PRICE) ? (appState = APP_STATES.STAGE_FAILED, guiManager.screenSwitcher_openOverlayScreen(guiManager.screenOverRevive)) : this.GameOver()
+        this.GameOver();
+        // this.coinsAvailable(REVIVE_PRICE) ? (appState = APP_STATES.STAGE_FAILED, guiManager.screenSwitcher_openOverlayScreen(guiManager.screenOverRevive)) : this.GameOver()
     },
     stageContinue: function() {
         gamePlay.incCoins(-REVIVE_PRICE);
@@ -3081,13 +3083,13 @@ GamePlay.prototype = {
         this.onGameOver(LEVEL_OVER);
     },
     onGameOver: function(a) {
-        gradle.event('game_over');
+        gradle.event('game_over|'+this.currentGameScore);
     },
     isLastLevel: function() {
         return gamePlay.currentStage === LEVELS_COUNT_PER_GAME_MODE - 1
     },
     setCoins: function(a) {
-        this.coinsCount = a;
+        this.coinsCount = 0;
         guiManager.screenTop.updateTotalCoinText();
         saveAllGameData()
     },
